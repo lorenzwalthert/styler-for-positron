@@ -1,0 +1,58 @@
+{
+  "name": "r-formatter-vscode",
+  "displayName": "R Formatter (styler)",
+  "description": "Format R files using the styler package",
+  "version": "0.0.1",
+  "publisher": "lorenzwalthert",
+  "categories": ["Formatters"],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "activationEvents": ["onLanguage:r"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "R Formatter",
+      "properties": {
+        "rFormatter.rscriptPath": {
+          "type": "string",
+          "default": "Rscript",
+          "description": "Path to the Rscript binary. Defaults to 'Rscript' (resolved via PATH)."
+        },
+        "rFormatter.timeoutMs": {
+          "type": "number",
+          "default": 30000,
+          "minimum": 1000,
+          "maximum": 300000,
+          "description": "Subprocess timeout in milliseconds (clamped to [1000, 300000])."
+        },
+        "rFormatter.stylerScope": {
+          "type": "string",
+          "enum": ["file", "text"],
+          "default": "text",
+          "description": "styler formatting scope: 'text' (stdin/stdout) or 'file' (temp file)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "node ./out/test/runTests.js",
+    "test:unit": "mocha --require ts-node/register 'src/test/unit/**/*.test.ts'",
+    "test:property": "mocha --require ts-node/register 'src/test/property/**/*.test.ts'"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^20.0.0",
+    "@types/sinon": "^17.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.0.0",
+    "fast-check": "^3.0.0",
+    "mocha": "^10.0.0",
+    "sinon": "^17.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
+  }
+}
