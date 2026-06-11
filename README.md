@@ -46,7 +46,7 @@ Positron activates `posit.air-vscode` by default, which also registers an R form
 ```json
 {
   "[r]": {
-    "editor.defaultFormatter": "lorenzwalthert.r-formatter-vscode"
+    "editor.defaultFormatter": "lorenzwalthert.styler-vscode"
   }
 }
 ```

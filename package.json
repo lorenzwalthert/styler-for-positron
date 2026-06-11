@@ -1,5 +1,5 @@
 {
-  "name": "r-formatter-vscode",
+  "name": "styler-vscode",
   "displayName": "R Formatter (styler)",
   "description": "Format R files in VS Code and Positron using the styler R package",
   "version": "0.0.1",
