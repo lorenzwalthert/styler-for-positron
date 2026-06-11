@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "vscode": ["./src/test/__mocks__/vscode.ts"]
+    }
+  }
+}

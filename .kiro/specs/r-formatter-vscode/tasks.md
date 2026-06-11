@@ -35,8 +35,8 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Mock `vscode.workspace.getConfiguration`; assert all defaults; assert `timeoutMs` clamping at both bounds; assert empty `rscriptPath` fallback; assert live-read behaviour (stub returns updated value on second call)
     - _Requirements: 4.1–4.5, 14.3, 14.4_
 
-- [ ] 4. Implement `FormatterInvoker`
-  - [ ] 4.1 Create `src/formatterInvoker.ts` with `buildInvokeSpec(config: ExtensionConfig, documentText: string): InvokeSpec`
+- [x] 4. Implement `FormatterInvoker`
+  - [x] 4.1 Create `src/formatterInvoker.ts` with `buildInvokeSpec(config: ExtensionConfig, documentText: string): InvokeSpec`
     - Set `args` to `['--vanilla', '-e', rExpr]` where `rExpr` is `"con<-file('stdin');out<-styler::style_text(readLines(con));cat(paste(out,collapse='\n'),'\n',sep='')"`
     - Set `stdin` to `documentText`; set `rscriptPath` from `config.rscriptPath`
     - Pass the R expression as a single array element — never embed in a shell string
@@ -52,11 +52,11 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Assert invoke spec shape: `--vanilla` first, single `-e` flag, correct R expression, `stdin === documentText`, `rscriptPath` sourced from config
     - _Requirements: 5.1–5.4, 13.3_
 
-- [ ] 5. Checkpoint — Ensure all tests pass
+- [x] 5. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement `ProcessRunner`
-  - [ ] 6.1 Create `src/processRunner.ts` with `run(command, args, stdin, timeoutMs, token): Promise<ProcessResult>`
+- [x] 6. Implement `ProcessRunner`
+  - [x] 6.1 Create `src/processRunner.ts` with `run(command, args, stdin, timeoutMs, token): Promise<ProcessResult>`
     - Use `child_process.spawn(command, args, { stdio: ['pipe','pipe','pipe'] })` — never `exec` or shell interpolation
     - When `stdin` is non-null, write to `proc.stdin` as UTF-8 then call `proc.stdin.end()`
     - Accumulate all `stdout` and `stderr` data events into separate `Buffer[]`; decode to UTF-8 on exit
@@ -71,8 +71,8 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Mock `child_process.spawn` with sinon; assert stdout/stderr buffers are concatenated correctly; assert `exitCode: -1` when timeout fires; assert `exitCode: -1` when cancellation token fires; assert `ENOENT` resolves with non-zero exit
     - _Requirements: 3.1–3.5, 6.1, 6.2, 7.1, 7.2, 8.1_
 
-- [ ] 7. Implement `ErrorReporter` and `classifyError`
-  - [ ] 7.1 Create `src/errorReporter.ts` with `report(kind: ErrorKind, detail?: string): void` and exported `classifyError(stderr: string): ErrorKind`
+- [x] 7. Implement `ErrorReporter` and `classifyError`
+  - [x] 7.1 Create `src/errorReporter.ts` with `report(kind: ErrorKind, detail?: string): void` and exported `classifyError(stderr: string): ErrorKind`
     - `RscriptNotFound`: `showErrorMessage` with guidance to install R or set `rFormatter.rscriptPath`
     - `PackageNotFound`: `showErrorMessage` with package name and `install.packages('styler')` command
     - `FormattingFailed`: `showErrorMessage` with first 200 characters of `detail`
@@ -86,11 +86,11 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Stub `vscode.window.showErrorMessage` and `showWarningMessage`; assert correct message content for each `ErrorKind`; assert `Cancelled` produces no call; assert `classifyError` returns correct kind for representative stderr strings
     - _Requirements: 6.4, 8.1, 8.2, 9.1, 9.2, 11.1, 11.2_
 
-- [ ] 8. Checkpoint — Ensure all tests pass
+- [x] 8. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Implement `FormattingProvider`
-  - [ ] 9.1 Create `src/formattingProvider.ts` implementing `vscode.DocumentFormattingEditProvider`
+- [x] 9. Implement `FormattingProvider`
+  - [x] 9.1 Create `src/formattingProvider.ts` implementing `vscode.DocumentFormattingEditProvider`
     - Constructor accepts `ConfigurationReader`, `FormatterInvoker`, `ProcessRunner`, `ErrorReporter` via dependency injection
     - In `provideDocumentFormattingEdits`: call `configReader.getConfig()`, then `invoker.buildInvokeSpec(config, document.getText())`, then `runner.run(...)` with the cancellation token
     - `exitCode === -1`: return `[]`; additionally call `reporter.report(ErrorKind.Timeout, ...)` when timeout (not cancellation)
@@ -116,19 +116,19 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Also assert that when `exitCode === 0` and `stdout === originalText`, the result is `[]` (no spurious edit)
     - _Requirements: 2.1–2.5, 6.3, 7.3, 8.3, 9.3, 11.3, 12.1, 12.2_
 
-- [ ] 10. Wire up extension activation
-  - [ ] 10.1 Create `src/extension.ts` with exported `activate(context: vscode.ExtensionContext): void`
+- [x] 10. Wire up extension activation
+  - [x] 10.1 Create `src/extension.ts` with exported `activate(context: vscode.ExtensionContext): void`
     - Instantiate `ConfigurationReader`, `FormatterInvoker`, `ProcessRunner`, `ErrorReporter`, and `FormattingProvider`
     - Call `vscode.languages.registerDocumentFormattingEditProvider({ language: 'r' }, provider)` and push disposable to `context.subscriptions`
     - Export a no-op `deactivate(): void`
     - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 11. Checkpoint — Ensure all tests pass
+- [x] 11. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Integration tests
-  - [ ] 12.1 Create `src/test/fixtures/unformatted.r` with a small R snippet that `styler` will reformat (e.g., inconsistent spacing around operators)
-  - [ ] 12.2 Create `src/test/fixtures/formatted.r` with the expected `styler`-formatted output of the same snippet
+- [x] 12. Integration tests
+  - [x] 12.1 Create `src/test/fixtures/unformatted.r` with a small R snippet that `styler` will reformat (e.g., inconsistent spacing around operators)
+  - [x] 12.2 Create `src/test/fixtures/formatted.r` with the expected `styler`-formatted output of the same snippet
 
   - [ ]* 12.3 Write integration tests with `@vscode/test-electron`
     - Create `src/test/integration/extension.integration.test.ts` and `src/test/runTests.ts` as the runner entry point
@@ -136,7 +136,7 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Add test: set `rFormatter.rscriptPath` to a non-existent path; execute format; assert error notification is shown
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 5.1, 8.1, 8.2_
 
-- [ ] 13. Final checkpoint — Ensure all tests pass
+- [-] 13. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

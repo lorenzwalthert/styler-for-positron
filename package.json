@@ -4,11 +4,15 @@
   "description": "Format R files using the styler package",
   "version": "0.0.1",
   "publisher": "lorenzwalthert",
-  "categories": ["Formatters"],
+  "categories": [
+    "Formatters"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
-  "activationEvents": ["onLanguage:r"],
+  "activationEvents": [
+    "onLanguage:r"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
@@ -28,7 +32,10 @@
         },
         "rFormatter.stylerScope": {
           "type": "string",
-          "enum": ["file", "text"],
+          "enum": [
+            "file",
+            "text"
+          ],
           "default": "text",
           "description": "styler formatting scope: 'text' (stdin/stdout) or 'file' (temp file)."
         }
@@ -40,8 +47,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "test": "node ./out/test/runTests.js",
-    "test:unit": "mocha --require ts-node/register 'src/test/unit/**/*.test.ts'",
-    "test:property": "mocha --require ts-node/register 'src/test/property/**/*.test.ts'"
+    "test:unit": "TS_NODE_PROJECT=tsconfig.test.json mocha --require ts-node/register --require tsconfig-paths/register 'src/test/unit/**/*.test.ts'",
+    "test:property": "TS_NODE_PROJECT=tsconfig.test.json mocha --require ts-node/register --require tsconfig-paths/register 'src/test/property/**/*.test.ts'"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.0",
@@ -53,6 +60,7 @@
     "mocha": "^10.0.0",
     "sinon": "^17.0.0",
     "ts-node": "^10.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.0"
   }
 }
