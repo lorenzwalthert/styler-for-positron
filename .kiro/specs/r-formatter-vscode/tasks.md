@@ -136,7 +136,7 @@ Implements the `r-formatter-vscode` VS Code extension in TypeScript. The plan fo
     - Add test: set `rFormatter.rscriptPath` to a non-existent path; execute format; assert error notification is shown
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 5.1, 8.1, 8.2_
 
-- [-] 13. Final checkpoint — Ensure all tests pass
+- [x] 13. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
