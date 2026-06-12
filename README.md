@@ -1,6 +1,6 @@
 # {styler} for Positron
 
-> Note that this is experimental, written mostly by AI ([Kiro](https://kiro.dev)), may not be maintained long term.
+> This is experimental, written mostly by AI ([Kiro](https://kiro.dev)), and long-term support is not guaranteed, breaking API changes can occur.
 
 A Code OSS extension that formats R code using the [{styler}](https://styler.r-lib.org/) package, primarily targetting Positron, since other Code OSS derivatives are compatible [vscode-r](https://github.com/REditorSupport/vscode-R) extension (and Positron is [not](https://positron.posit.co/extensions.html)). It registers a document formatting provider for R, so "Format Document" and "Format on Save" work automatically for `.r`, `.R`, `.qmd`, and `.Rmd` files.
 
