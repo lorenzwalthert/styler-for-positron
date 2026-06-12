@@ -15,7 +15,7 @@ A Code OSS extension that formats R files using the [{styler}](https://styler.r-
 
 ## Installation
 
-Search for **"R Formatter (styler)"** in the VS Code Extensions panel, or install from [Open VSX](https://open-vsx.org/).
+Search for **"{styler}: Non-Invasive Pretty Printing of R Code"** in the VS Code Extensions panel, or install from [Open VSX](https://open-vsx.org/).
 
 Once installed, the extension activates automatically when you open an R file. Trigger formatting with:
 - **Format Document**: `Shift+Alt+F` (Windows/Linux) or `Shift+Option+F` (macOS)
