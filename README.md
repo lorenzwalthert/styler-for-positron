@@ -1,11 +1,14 @@
-# R Formatter (styler)
+# {styler} for Positron
 
-A VS Code extension that formats R files using the [`styler`](https://styler.r-lib.org/) package. It registers a document formatting provider for R, so "Format Document" and Format on Save work automatically for `.r` and `.R` files.
+> Note that this is experimental, written mostly by AI ([Kiro](https://kiro.dev)), may not be maintained long term.
+
+A Code OSS extension that formats R files using the [{styler}](https://styler.r-lib.org/) package, primarily targetting Positron, since other Code OSS derivatives are compatible [vscode-r](https://github.com/REditorSupport/vscode-R) extension (and Positron is [not](https://positron.posit.co/extensions.html)). It registers a document formatting provider for R, so "Format Document" and "Format on Save" work automatically for `.r` and `.R` files.
+
 
 ## Requirements
 
 - **R ≥ 4.0** installed and `Rscript` available on your PATH (or configured via `rFormatter.rscriptPath`)
-- **styler ≥ 1.9.0** installed in your R environment:
+- **styler ≥ 1.9.0** installed in your global R environment:
   ```r
   install.packages("styler")
   ```
@@ -46,7 +49,7 @@ Positron activates `posit.air-vscode` by default, which also registers an R form
 ```json
 {
   "[r]": {
-    "editor.defaultFormatter": "lorenzwalthert.styler-vscode"
+    "editor.defaultFormatter": "lorenzwalthert.styler"
   }
 }
 ```

@@ -25,7 +25,7 @@ const FORMATTED_PATH = path.join(FIXTURES_DIR, 'formatted.r');
  * extensions API until it becomes active or we hit the timeout.
  */
 async function waitForExtensionActivation(timeoutMs = 15000): Promise<void> {
-  const extensionId = 'lorenzwalthert.styler-vscode';
+  const extensionId = 'lorenzwalthert.styler';
   const ext = vscode.extensions.getExtension(extensionId);
   if (!ext) {
     // Extension may not be registered under an id during testing; continue.
