@@ -21,6 +21,31 @@ Once installed, the extension activates automatically when you open an R file. T
 - **Format Document**: `Shift+Alt+F` (Windows/Linux) or `Shift+Option+F` (macOS)
 - **Format on Save**: enable `"editor.formatOnSave": true` in your VS Code settings
 
+
+## Positron Compatibility
+
+This extension is fully compatible with [Positron](https://github.com/posit-dev/positron) — no code changes are required. Positron is built on Code OSS and supports all standard VS Code extension APIs used here. Install the extension from [Open VSX](https://open-vsx.org/) so Positron users can find it (the VS Code Marketplace is separate and not available in Positron).
+
+Positron activates `posit.air-vscode` by default, which also registers an R formatter. When multiple formatters are active, VS Code and Positron will prompt you to choose the default formatter upon styling. To always use {styler}, add this to your `settings.json`:
+
+```json
+{
+  "[r]": {
+    "editor.defaultFormatter": "lorenzwalthert.styler"
+  }
+}
+```
+
+## Troubleshooting
+
+**"Rscript not found"** — R is not installed or not on your PATH. Install R from [r-project.org](https://www.r-project.org/) or set `rFormatter.rscriptPath` to the full path of your `Rscript` binary.
+
+**"Package 'styler' is not installed"** — Run `install.packages("styler")` in R, then try formatting again.
+
+**"Formatting timed out"** — The formatter took longer than `rFormatter.timeoutMs`. Increase the timeout in settings.
+
+**Formatting failed with a syntax error** — {styler} may not be able to format files with R syntax errors. Fix the error first, then format.
+
 ## Configuration
 
 All settings live under the `rFormatter` namespace in VS Code settings.
@@ -39,30 +64,6 @@ Example `settings.json`:
   "rFormatter.stylerScope": "text"
 }
 ```
-
-## Positron Compatibility
-
-This extension is fully compatible with [Positron](https://github.com/posit-dev/positron) — no code changes are required. Positron is built on Code OSS and supports all standard VS Code extension APIs used here. Install the extension from [Open VSX](https://open-vsx.org/) so Positron users can find it (the VS Code Marketplace is separate and not available in Positron).
-
-Positron activates `posit.air-vscode` by default, which also registers an R formatter. When multiple formatters are active, VS Code and Positron will prompt you to choose the default formatter. To always use styler, add this to your `settings.json`:
-
-```json
-{
-  "[r]": {
-    "editor.defaultFormatter": "lorenzwalthert.styler"
-  }
-}
-```
-
-## Troubleshooting
-
-**"Rscript not found"** — R is not installed or not on your PATH. Install R from [r-project.org](https://www.r-project.org/) or set `rFormatter.rscriptPath` to the full path of your `Rscript` binary.
-
-**"Package 'styler' is not installed"** — Run `install.packages("styler")` in R, then try formatting again.
-
-**"Formatting timed out"** — The formatter took longer than `rFormatter.timeoutMs`. Increase the timeout in settings.
-
-**Formatting failed with a syntax error** — `styler` may not be able to format files with R syntax errors. Fix the error first, then format.
 
 ## License
 
