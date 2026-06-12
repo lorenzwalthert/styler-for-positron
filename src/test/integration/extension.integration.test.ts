@@ -42,6 +42,25 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
+ * Poll until `predicate()` returns true or `timeoutMs` elapses.
+ * Returns true if the predicate was satisfied, false on timeout.
+ */
+async function waitUntil(
+  predicate: () => boolean,
+  timeoutMs: number,
+  intervalMs = 200,
+): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (predicate()) {
+      return true;
+    }
+    await sleep(intervalMs);
+  }
+  return predicate(); // one final check
+}
+
+/**
  * Open a file in the VS Code editor and return the document + editor.
  */
 async function openFile(
@@ -88,8 +107,18 @@ describe('R Formatter extension — integration', function () {
     // Execute the built-in format command — this calls our provider.
     await vscode.commands.executeCommand('editor.action.formatDocument');
 
-    // VS Code applies edits asynchronously; wait briefly for the edit to land.
-    await sleep(1000);
+    // Poll until the document text changes (formatting applied) or timeout.
+    // Fixed sleeps are unreliable on CI — Rscript startup can take 2–3 s.
+    const formatted = await waitUntil(
+      () => doc.getText() !== fs.readFileSync(UNFORMATTED_PATH, 'utf8'),
+      30000,
+    );
+
+    assert.ok(
+      formatted,
+      'Timed out waiting for the formatter to apply edits (30 s). ' +
+        'Check that Rscript and the styler package are installed on the CI runner.',
+    );
 
     const actualText = doc.getText();
     assert.strictEqual(
