@@ -15,7 +15,7 @@ A Code OSS extension that formats R code using the [{styler}](https://styler.r-l
 
 ## Installation
 
-Search for **"{styler}: Non-Invasive Pretty Printing of R Code"** in the VS Code Extensions panel, or install from [Open VSX](https://open-vsx.org/).
+Search for **"{styler}: Non-Invasive Pretty Printing of R Code"** in the Extensions panel, or install from [Open VSX](https://open-vsx.org/).
 
 Once installed, the extension activates automatically when you open an R file. Trigger formatting with:
 - **Format Document**: `Shift+Alt+F` (Windows/Linux) or `Shift+Option+F` (macOS)
@@ -24,7 +24,7 @@ Once installed, the extension activates automatically when you open an R file. T
 
 ## Positron Compatibility
 
-This extension is fully compatible with [Positron](https://github.com/posit-dev/positron) — no code changes are required. Positron is built on Code OSS and supports all standard VS Code extension APIs used here. Install the extension from [Open VSX](https://open-vsx.org/) so Positron users can find it (the VS Code Marketplace is separate and not available in Positron).
+This extension is fully compatible with [Positron](https://github.com/posit-dev/positron) — no code changes are required. Positron is built on Code OSS and supports all standard VS Code extension APIs used here.
 
 Positron activates `posit.air-vscode` by default, which also registers an R formatter. When multiple formatters are active, VS Code and Positron will prompt you to choose the default formatter upon styling. To always use {styler}, add this to your `settings.json`:
 
