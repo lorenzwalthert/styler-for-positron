@@ -17,6 +17,8 @@ A Code OSS extension that formats R code using the [{styler}](https://styler.r-l
 
 Search for **"{styler}: Non-Invasive Pretty Printing of R Code"** in the Extensions panel, or install from [Open VSX](https://open-vsx.org/).
 
+In Positron, you need to set the Gallery Source to `"open-vsx"` instead of `"posit-p3m"` (just search for *Gallery Source* in settings) for the package to show up.
+
 Once installed, the extension activates automatically when you open an R file. Trigger formatting with:
 - **Format Document**: `Shift+Alt+F` (Windows/Linux) or `Shift+Option+F` (macOS)
 - **Format on Save**: enable `"editor.formatOnSave": true` in your VS Code settings
