@@ -2,7 +2,7 @@
   "name": "styler",
   "displayName": "{styler}: Non-Invasive Pretty Printing of R Code",
   "description": "Format R code using the {styler} R package",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "lorenzwalthert",
   "author": {
     "name": "Lorenz Walthert"
@@ -42,26 +42,17 @@
     "configuration": {
       "title": "R Formatter",
       "properties": {
-        "rFormatter.rscriptPath": {
+        "styler.rscriptPath": {
           "type": "string",
           "default": "Rscript",
           "description": "Path to the Rscript binary. Defaults to 'Rscript' (resolved via PATH)."
         },
-        "rFormatter.timeoutMs": {
+        "styler.timeoutMs": {
           "type": "number",
           "default": 30000,
           "minimum": 1000,
           "maximum": 300000,
           "description": "Subprocess timeout in milliseconds (clamped to [1000, 300000])."
-        },
-        "rFormatter.stylerScope": {
-          "type": "string",
-          "enum": [
-            "file",
-            "text"
-          ],
-          "default": "text",
-          "description": "styler formatting scope: 'text' (stdin/stdout) or 'file' (temp file)."
         }
       }
     }

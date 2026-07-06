@@ -5,13 +5,11 @@
  */
 
 /**
- * Extension configuration read from the `rFormatter` VS Code configuration namespace.
+ * Extension configuration read from the `styler` VS Code configuration namespace.
  */
 export interface ExtensionConfig {
   /** Path to the Rscript binary. Defaults to 'Rscript' (resolved via PATH). */
   rscriptPath: string;
-  /** styler formatting scope: 'text' (stdin/stdout) or 'file' (temp file). */
-  stylerScope: 'file' | 'text';
   /** Subprocess timeout in milliseconds. Clamped to [1000, 300000]. */
   timeoutMs: number;
 }

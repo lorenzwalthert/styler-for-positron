@@ -7,7 +7,7 @@ A Code OSS extension that formats R code using the [{styler}](https://styler.r-l
 
 ## Requirements
 
-- **R ≥ 4.0** installed and `Rscript` available on your PATH (or configured via `rFormatter.rscriptPath`)
+- **R ≥ 4.0** installed and `Rscript` available on your PATH (or configured via `styler.rscriptPath`)
 - **styler ≥ 1.9.0** installed in your global R environment:
   ```r
   install.packages("styler")
@@ -38,29 +38,27 @@ Positron activates `posit.air-vscode` by default, which also registers an R form
 
 ## Troubleshooting
 
-**"Rscript not found"** — R is not installed or not on your PATH. Install R from [r-project.org](https://www.r-project.org/) or set `rFormatter.rscriptPath` to the full path of your `Rscript` binary.
+**"Rscript not found"** — R is not installed or not on your PATH. Install R from [r-project.org](https://www.r-project.org/) or set `styler.rscriptPath` to the full path of your `Rscript` binary.
 
 **"Package 'styler' is not installed"** — Run `install.packages("styler")` in R, then try formatting again.
 
-**"Formatting timed out"** — The formatter took longer than `rFormatter.timeoutMs`. Increase the timeout in settings.
+**"Formatting timed out"** — The formatter took longer than `styler.timeoutMs`. Increase the timeout in settings.
 
 **Formatting failed with a syntax error** — {styler} may not be able to format files with R syntax errors. Fix the error first, then format.
 
 ## Configuration
 
-All settings live under the `rFormatter` namespace in VS Code settings.
+All settings live under the `styler` namespace in VS Code settings.
 
 | Setting | Type | Default | Description |
 |---|---|---|---|
-| `rFormatter.rscriptPath` | string | `"Rscript"` | Path to the `Rscript` binary. Defaults to `"Rscript"`, resolved via PATH. Set to an absolute path if R is not on your PATH (e.g. `"/usr/local/bin/Rscript"`). |
-| `rFormatter.timeoutMs` | number | `30000` | Subprocess timeout in milliseconds. Clamped to the range `[1000, 300000]`. Increase this for very large files or slow machines. |
-| `rFormatter.stylerScope` | `"text"` \| `"file"` | `"text"` | Formatting scope: `"text"` passes code via stdin/stdout; `"file"` uses a temporary file. |
+| `styler.rscriptPath` | string | `"Rscript"` | Path to the `Rscript` binary. Defaults to `"Rscript"`, resolved via PATH. Set to an absolute path if R is not on your PATH (e.g. `"/usr/local/bin/Rscript"`). |
+| `styler.timeoutMs` | number | `30000` | Subprocess timeout in milliseconds. Clamped to the range `[1000, 300000]`. Increase this for very large files or slow machines. |
 
 Example `settings.json`:
 ```json
 {
-  "rFormatter.rscriptPath": "/usr/local/bin/Rscript",
-  "rFormatter.timeoutMs": 60000,
-  "rFormatter.stylerScope": "text"
+  "styler.rscriptPath": "/usr/local/bin/Rscript",
+  "styler.timeoutMs": 60000
 }
 ```
