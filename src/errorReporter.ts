@@ -48,7 +48,7 @@ export class ErrorReporter {
    * Displays the appropriate VS Code notification for the given `ErrorKind`.
    *
    * - `RscriptNotFound`: error message with guidance to install R or configure
-   *   `rFormatter.rscriptPath` (Req 9.2).
+   *   `styler.rscriptPath` (Req 9.2).
    * - `PackageNotFound`: error message with `install.packages('styler')` hint
    *   (Req 8.2).
    * - `FormattingFailed`: error message showing the first 200 chars of `detail`
@@ -63,7 +63,7 @@ export class ErrorReporter {
     switch (kind) {
       case ErrorKind.RscriptNotFound:
         vscode.window.showErrorMessage(
-          "R Formatter: Rscript not found. Please install R or set 'rFormatter.rscriptPath' to the correct path.",
+          "R Formatter: Rscript not found. Please install R or set 'styler.rscriptPath' to the correct path.",
         );
         break;
 

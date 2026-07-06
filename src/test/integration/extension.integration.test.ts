@@ -124,7 +124,7 @@ describe('R Formatter extension — integration', function () {
     const originalText = fs.readFileSync(UNFORMATTED_PATH, 'utf8');
 
     // Set a non-existent Rscript path in global configuration.
-    const config = vscode.workspace.getConfiguration('rFormatter');
+    const config = vscode.workspace.getConfiguration('styler');
     const previousPath = config.get<string>('rscriptPath', 'Rscript');
     await config.update(
       'rscriptPath',

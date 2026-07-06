@@ -80,7 +80,7 @@ describe('ErrorReporter.report', () => {
     reporter.report(ErrorKind.RscriptNotFound as ErrorKindValue);
     const msg: string = showErrorStub.firstCall.args[0];
     assert.ok(
-      msg.includes('rFormatter.rscriptPath') || msg.includes('Rscript'),
+      msg.includes('styler.rscriptPath') || msg.includes('Rscript'),
       'Message should reference the Rscript path',
     );
   });

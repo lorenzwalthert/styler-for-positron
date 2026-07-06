@@ -5,7 +5,7 @@
  */
 
 /**
- * Extension configuration read from the `rFormatter` VS Code configuration namespace.
+ * Extension configuration read from the `styler` VS Code configuration namespace.
  */
 export interface ExtensionConfig {
   /** Path to the Rscript binary. Defaults to 'Rscript' (resolved via PATH). */

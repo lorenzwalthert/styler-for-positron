@@ -1,5 +1,5 @@
 /**
- * Reads extension configuration from the VS Code `rFormatter` namespace.
+ * Reads extension configuration from the VS Code `styler` namespace.
  *
  * Requirements: 4.1, 4.2, 4.3, 4.5, 14.3, 14.4
  */
@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 import { ExtensionConfig } from './types';
 
 /**
- * Reads the `rFormatter` configuration on every call — no caching — so that
+ * Reads the `styler` configuration on every call — no caching — so that
  * changes made by the user are picked up immediately (Req 4.5).
  */
 export class ConfigurationReader {
@@ -24,7 +24,7 @@ export class ConfigurationReader {
   getConfig(): ExtensionConfig {
     // Re-read on every invocation so the user sees updated values immediately
     // without reloading the extension window (Req 4.1, 4.5).
-    const cfg = vscode.workspace.getConfiguration('rFormatter');
+    const cfg = vscode.workspace.getConfiguration('styler');
 
     // rscriptPath — substitute 'Rscript' when empty or undefined (Req 14.3)
     const rawPath = cfg.get<string>('rscriptPath', 'Rscript');

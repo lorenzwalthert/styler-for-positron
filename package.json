@@ -42,12 +42,12 @@
     "configuration": {
       "title": "R Formatter",
       "properties": {
-        "rFormatter.rscriptPath": {
+        "styler.rscriptPath": {
           "type": "string",
           "default": "Rscript",
           "description": "Path to the Rscript binary. Defaults to 'Rscript' (resolved via PATH)."
         },
-        "rFormatter.timeoutMs": {
+        "styler.timeoutMs": {
           "type": "number",
           "default": 30000,
           "minimum": 1000,
