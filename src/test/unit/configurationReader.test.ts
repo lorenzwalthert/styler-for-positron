@@ -1,7 +1,7 @@
 /**
  * Unit tests for ConfigurationReader.
  *
- * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 14.3, 14.4
+ * Requirements: 4.1, 4.2, 4.3, 4.5, 14.3, 14.4
  */
 
 import * as assert from 'assert';
@@ -41,12 +41,6 @@ describe('ConfigurationReader', () => {
     getConfigStub.returns(makeConfig({}));
     const cfg = reader.getConfig();
     assert.strictEqual(cfg.rscriptPath, 'Rscript');
-  });
-
-  it('returns default stylerScope when not configured', () => {
-    getConfigStub.returns(makeConfig({}));
-    const cfg = reader.getConfig();
-    assert.strictEqual(cfg.stylerScope, 'text');
   });
 
   it('returns default timeoutMs when not configured', () => {
@@ -111,26 +105,6 @@ describe('ConfigurationReader', () => {
     getConfigStub.returns(makeConfig({ timeoutMs: 15000 }));
     const cfg = reader.getConfig();
     assert.strictEqual(cfg.timeoutMs, 15000);
-  });
-
-  // ── stylerScope ───────────────────────────────────────────────────────────
-
-  it('uses "file" scope when configured', () => {
-    getConfigStub.returns(makeConfig({ stylerScope: 'file' }));
-    const cfg = reader.getConfig();
-    assert.strictEqual(cfg.stylerScope, 'file');
-  });
-
-  it('uses "text" scope when configured', () => {
-    getConfigStub.returns(makeConfig({ stylerScope: 'text' }));
-    const cfg = reader.getConfig();
-    assert.strictEqual(cfg.stylerScope, 'text');
-  });
-
-  it('falls back to "text" for unrecognised stylerScope values', () => {
-    getConfigStub.returns(makeConfig({ stylerScope: 'unknown' }));
-    const cfg = reader.getConfig();
-    assert.strictEqual(cfg.stylerScope, 'text');
   });
 
   // ── live-read behaviour (Req 4.5) ─────────────────────────────────────────

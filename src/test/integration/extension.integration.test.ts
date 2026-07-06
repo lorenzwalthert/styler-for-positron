@@ -42,25 +42,6 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Poll until `predicate()` returns true or `timeoutMs` elapses.
- * Returns true if the predicate was satisfied, false on timeout.
- */
-async function waitUntil(
-  predicate: () => boolean,
-  timeoutMs: number,
-  intervalMs = 200,
-): Promise<boolean> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    if (predicate()) {
-      return true;
-    }
-    await sleep(intervalMs);
-  }
-  return predicate(); // one final check
-}
-
-/**
  * Open a file in the VS Code editor and return the document + editor.
  */
 async function openFile(
@@ -104,21 +85,29 @@ describe('R Formatter extension — integration', function () {
     // Give the extension host a moment to wire up the formatting provider.
     await sleep(500);
 
-    // Execute the built-in format command — this calls our provider.
+    // Set up a listener BEFORE triggering format so we don't miss the event.
+    // The promise resolves as soon as VS Code applies any edit to this document.
+    const changePromise = new Promise<void>((resolve) => {
+      const disposable = vscode.workspace.onDidChangeTextDocument((e) => {
+        if (e.document === doc && e.contentChanges.length > 0) {
+          disposable.dispose();
+          resolve();
+        }
+      });
+    });
+
     await vscode.commands.executeCommand('editor.action.formatDocument');
 
-    // Poll until the document text changes (formatting applied) or timeout.
-    // Fixed sleeps are unreliable on CI — Rscript startup can take 2–3 s.
-    const formatted = await waitUntil(
-      () => doc.getText() !== fs.readFileSync(UNFORMATTED_PATH, 'utf8'),
-      30000,
-    );
-
-    assert.ok(
-      formatted,
-      'Timed out waiting for the formatter to apply edits (30 s). ' +
-        'Check that Rscript and the styler package are installed on the CI runner.',
-    );
+    // Wait for the document change event (with a generous timeout).
+    await Promise.race([
+      changePromise,
+      sleep(30000).then(() => {
+        throw new Error(
+          'Timed out (30s) waiting for formatter to apply edits. ' +
+          'Ensure Rscript and the styler package are installed.',
+        );
+      }),
+    ]);
 
     const actualText = doc.getText();
     assert.strictEqual(

@@ -53,15 +53,6 @@
           "minimum": 1000,
           "maximum": 300000,
           "description": "Subprocess timeout in milliseconds (clamped to [1000, 300000])."
-        },
-        "rFormatter.stylerScope": {
-          "type": "string",
-          "enum": [
-            "file",
-            "text"
-          ],
-          "default": "text",
-          "description": "styler formatting scope: 'text' (stdin/stdout) or 'file' (temp file)."
         }
       }
     }

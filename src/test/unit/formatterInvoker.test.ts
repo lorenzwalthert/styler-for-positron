@@ -13,7 +13,6 @@ import { ExtensionConfig } from '../../types';
 function makeConfig(overrides: Partial<ExtensionConfig> = {}): ExtensionConfig {
   return {
     rscriptPath: 'Rscript',
-    stylerScope: 'text',
     timeoutMs: 30000,
     ...overrides,
   };

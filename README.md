@@ -54,13 +54,11 @@ All settings live under the `rFormatter` namespace in VS Code settings.
 |---|---|---|---|
 | `rFormatter.rscriptPath` | string | `"Rscript"` | Path to the `Rscript` binary. Defaults to `"Rscript"`, resolved via PATH. Set to an absolute path if R is not on your PATH (e.g. `"/usr/local/bin/Rscript"`). |
 | `rFormatter.timeoutMs` | number | `30000` | Subprocess timeout in milliseconds. Clamped to the range `[1000, 300000]`. Increase this for very large files or slow machines. |
-| `rFormatter.stylerScope` | `"text"` \| `"file"` | `"text"` | Formatting scope: `"text"` passes code via stdin/stdout; `"file"` uses a temporary file. |
 
 Example `settings.json`:
 ```json
 {
   "rFormatter.rscriptPath": "/usr/local/bin/Rscript",
-  "rFormatter.timeoutMs": 60000,
-  "rFormatter.stylerScope": "text"
+  "rFormatter.timeoutMs": 60000
 }
 ```
