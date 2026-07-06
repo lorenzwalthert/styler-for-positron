@@ -14,6 +14,7 @@ function makeConfig(overrides: Partial<ExtensionConfig> = {}): ExtensionConfig {
   return {
     rscriptPath: 'Rscript',
     timeoutMs: 30000,
+    cacheRoot: 'styler-perm',
     ...overrides,
   };
 }

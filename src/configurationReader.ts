@@ -34,6 +34,10 @@ export class ConfigurationReader {
     const rawTimeout = cfg.get<number>('timeoutMs', 30000);
     const timeoutMs = Math.min(300000, Math.max(1000, rawTimeout));
 
-    return { rscriptPath, timeoutMs };
+    // cacheRoot — pass through as-is; fall back to 'styler-perm' if empty
+    const rawCacheRoot = cfg.get<string>('cache_root', 'styler-perm');
+    const cacheRoot = rawCacheRoot && rawCacheRoot.trim().length > 0 ? rawCacheRoot : 'styler-perm';
+
+    return { rscriptPath, timeoutMs, cacheRoot };
   }
 }

@@ -53,6 +53,11 @@
           "minimum": 1000,
           "maximum": 300000,
           "description": "Subprocess timeout in milliseconds (clamped to [1000, 300000])."
+        },
+        "styler.cache_root": {
+          "type": "string",
+          "default": "styler-perm",
+          "description": "Value for the R option 'styler.cache_root'. Controls where styler stores its formatting cache. Set to an empty string to disable caching."
         }
       }
     }
