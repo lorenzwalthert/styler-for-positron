@@ -60,6 +60,11 @@ export async function run(
     });
 
     // Req 3.2: write stdin as UTF-8 then close the write stream.
+    // Attach an error handler to swallow EPIPE — on macOS, if the R process
+    // exits before we finish writing, the OS sends SIGPIPE which would crash
+    // the extension host. Ignoring the error here is safe: the process exit
+    // handler will fire regardless and return a non-zero exit code.
+    proc.stdin.on('error', () => { /* ignore EPIPE / write-after-close */ });
     if (stdin !== null) {
       proc.stdin.write(stdin, 'utf8');
     }

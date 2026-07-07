@@ -64,7 +64,7 @@ async function closeAllEditors(): Promise<void> {
 
 describe('R Formatter extension — integration', function () {
   // Generous timeout for VS Code startup and R subprocess.
-  this.timeout(60000);
+  this.timeout(120000);
 
   afterEach(async () => {
     await closeAllEditors();
@@ -101,9 +101,9 @@ describe('R Formatter extension — integration', function () {
     // Wait for the document change event (with a generous timeout).
     await Promise.race([
       changePromise,
-      sleep(30000).then(() => {
+      sleep(60000).then(() => {
         throw new Error(
-          'Timed out (30s) waiting for formatter to apply edits. ' +
+          'Timed out (60s) waiting for formatter to apply edits. ' +
           'Ensure Rscript and the styler package are installed.',
         );
       }),

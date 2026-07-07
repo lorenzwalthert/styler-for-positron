@@ -27,13 +27,24 @@ export class ConfigurationReader {
     const cfg = vscode.workspace.getConfiguration('styler');
 
     // rscriptPath — substitute 'Rscript' when empty or undefined (Req 14.3)
+    // Also honour RSCRIPT_PATH env var set by CI (macOS PATH workaround).
     const rawPath = cfg.get<string>('rscriptPath', 'Rscript');
-    const rscriptPath = rawPath && rawPath.trim().length > 0 ? rawPath : 'Rscript';
+    const envPath = process.env['RSCRIPT_PATH'];
+    const rscriptPath =
+      rawPath && rawPath.trim().length > 0
+        ? rawPath
+        : envPath && envPath.trim().length > 0
+          ? envPath
+          : 'Rscript';
 
     // timeoutMs — clamp to [1000, 300000] (Req 14.4)
     const rawTimeout = cfg.get<number>('timeoutMs', 30000);
     const timeoutMs = Math.min(300000, Math.max(1000, rawTimeout));
 
-    return { rscriptPath, timeoutMs };
+    // cacheRoot — pass through as-is; fall back to 'styler-perm' if empty
+    const rawCacheRoot = cfg.get<string>('cache_root', 'styler-perm');
+    const cacheRoot = rawCacheRoot && rawCacheRoot.trim().length > 0 ? rawCacheRoot : 'styler-perm';
+
+    return { rscriptPath, timeoutMs, cacheRoot };
   }
 }

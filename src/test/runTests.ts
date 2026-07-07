@@ -30,9 +30,17 @@ async function main(): Promise<void> {
         '--disable-extensions',
         fixturesPath,
       ],
-      // Pass --disable-gpu so tests run in headless CI environments (Xvfb handles display).
+      // Forward the current process PATH into the extension host so that
+      // Rscript (installed by r-lib/actions/setup-r on CI) is discoverable.
+      // On macOS, Electron apps launched outside a shell don't inherit PATH
+      // from the CI environment, which causes spawn('Rscript') to fail with
+      // ENOENT and trigger an Unexpected SIGPIPE in the extension host.
       extensionTestsEnv: {
         ELECTRON_DISABLE_GPU: '1',
+        PATH: process.env.PATH ?? '',
+        // If CI explicitly set RSCRIPT_PATH (macOS/Windows), pass it through
+        // so the ConfigurationReader default can be overridden in tests.
+        ...(process.env.RSCRIPT_PATH ? { RSCRIPT_PATH: process.env.RSCRIPT_PATH } : {}),
       },
     });
   } catch (err) {

@@ -12,6 +12,8 @@ export interface ExtensionConfig {
   rscriptPath: string;
   /** Subprocess timeout in milliseconds. Clamped to [1000, 300000]. */
   timeoutMs: number;
+  /** Value passed to options("styler.cache_root"). Defaults to 'styler-perm'. */
+  cacheRoot: string;
 }
 
 /**

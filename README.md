@@ -54,11 +54,13 @@ All settings live under the `styler` namespace in VS Code settings.
 |---|---|---|---|
 | `styler.rscriptPath` | string | `"Rscript"` | Path to the `Rscript` binary. Defaults to `"Rscript"`, resolved via PATH. Set to an absolute path if R is not on your PATH (e.g. `"/usr/local/bin/Rscript"`). |
 | `styler.timeoutMs` | number | `30000` | Subprocess timeout in milliseconds. Clamped to the range `[1000, 300000]`. Increase this for very large files or slow machines. |
+| `styler.cache_root` | string | `"styler-perm"` | Value for the R option `styler.cache_root`. Controls where {styler} stores its formatting cache. See [styler caching docs](https://styler.r-lib.org/articles/caching.html) for details. |
 
 Example `settings.json`:
 ```json
 {
   "styler.rscriptPath": "/usr/local/bin/Rscript",
-  "styler.timeoutMs": 60000
+  "styler.timeoutMs": 60000,
+  "styler.cache_root": "styler-perm"
 }
 ```
