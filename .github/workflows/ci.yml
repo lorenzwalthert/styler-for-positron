@@ -64,6 +64,14 @@ jobs:
         run: |
           install.packages("styler", repos = "https://cloud.r-project.org")
 
+      - name: Export Rscript path (macOS PATH fix)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          RSCRIPT_PATH="$(which Rscript)"
+          echo "RSCRIPT_PATH=$RSCRIPT_PATH" >> "$GITHUB_ENV"
+          echo "Rscript found at: $RSCRIPT_PATH"
+
       # ── Linux: install Xvfb and run tests through a virtual display ─────────
       - name: Install Xvfb (Linux only)
         if: runner.os == 'Linux'
