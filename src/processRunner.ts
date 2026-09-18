@@ -5,9 +5,58 @@
  * Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 6.1, 6.2, 7.1, 7.2, 8.1, 13.1, 13.2
  */
 
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import * as vscode from 'vscode';
 import { ProcessResult } from './types';
+
+/**
+ * Returns true when `command` is a Windows batch/command script (.bat or .cmd).
+ *
+ * On Windows, `child_process.spawn` with `shell: false` cannot execute .bat
+ * or .cmd files directly — doing so produces an EINVAL error.  The default R
+ * Windows installer places `Rscript.bat` (a thin wrapper) on the PATH, so
+ * users who rely on that wrapper will hit EINVAL unless we enable the shell.
+ *
+ * Setting `shell: true` only for these extensions keeps the default
+ * shell-free path (and its security properties) intact for normal binaries.
+ */
+function isBatchFile(command: string): boolean {
+  const lower = command.toLowerCase();
+  return lower.endsWith('.bat') || lower.endsWith('.cmd');
+}
+
+/**
+ * On Windows, resolves a bare command name (e.g. `'Rscript'`) to its full
+ * path using `where.exe`.  This lets us detect when the PATH entry for
+ * `Rscript` is actually `Rscript.bat` — a case that requires `shell: true`
+ * to spawn correctly — even when the user has not set an explicit path.
+ *
+ * Returns the first match from `where.exe`, or `command` unchanged if
+ * resolution fails or we are not on Windows.
+ */
+function resolveCommandOnWindows(command: string): string {
+  if (process.platform !== 'win32') {
+    return command;
+  }
+  // Skip resolution when the command is already an absolute path — the caller
+  // already knows exactly what they want to run.
+  if (command.includes('\\') || command.includes('/')) {
+    return command;
+  }
+  try {
+    const result = spawnSync('where.exe', [command], { encoding: 'utf8' });
+    if (result.status === 0 && result.stdout) {
+      // `where` may return multiple matches, one per line; take the first.
+      const first = result.stdout.trim().split(/\r?\n/)[0].trim();
+      if (first) {
+        return first;
+      }
+    }
+  } catch {
+    // where.exe not found or other error — fall back to original command.
+  }
+  return command;
+}
 
 /**
  * Spawns a subprocess and returns its result.
@@ -40,17 +89,28 @@ export async function run(
   timeoutMs: number,
   token: vscode.CancellationToken,
 ): Promise<ProcessResult> {
+  // On Windows, resolve bare command names (e.g. 'Rscript') to their full
+  // path so we can detect .bat wrappers that require shell:true.
+  const resolvedCommand = resolveCommandOnWindows(command);
+
   return new Promise<ProcessResult>((resolve) => {
     // Req 3.1, 13.1, 13.2: use spawn with explicit args array, stdio piped.
-    const proc = spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'] });
+    // On Windows, .bat/.cmd files require shell:true to be executable via spawn.
+    const proc = spawn(resolvedCommand, args, {
+      stdio: ['pipe', 'pipe', 'pipe'],
+      ...(isBatchFile(resolvedCommand) ? { shell: true } : undefined),
+    } as import('child_process').SpawnOptionsWithStdioTuple<'pipe','pipe','pipe'>);
 
     const stdoutChunks: Buffer[] = [];
     const stderrChunks: Buffer[] = [];
     let timedOut = false;
 
     // Req 8.1: handle ENOENT — Rscript binary not found on PATH.
+    // Also handle EINVAL — on Windows, spawning a .bat/.cmd file without
+    // shell:true causes CreateProcess to return EINVAL.  Both cases mean the
+    // process never started, so we resolve immediately with a clear message.
     proc.on('error', (err: NodeJS.ErrnoException) => {
-      if (err.code === 'ENOENT') {
+      if (err.code === 'ENOENT' || err.code === 'EINVAL') {
         clearTimeout(watchdog);
         cancellationListener.dispose();
         resolve({ stdout: '', stderr: 'Rscript not found', exitCode: 1 });
