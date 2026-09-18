@@ -90,15 +90,22 @@ export async function run(
   token: vscode.CancellationToken,
 ): Promise<ProcessResult> {
   // On Windows, resolve bare command names (e.g. 'Rscript') to their full
-  // path so we can detect .bat wrappers that require shell:true.
+  // path so we can detect .bat wrappers that require special handling.
   const resolvedCommand = resolveCommandOnWindows(command);
+
+  // On Windows, .bat/.cmd files cannot be launched by CreateProcess directly.
+  // Instead of using shell:true (which concatenates args into a string and lets
+  // cmd.exe parse them — breaking the R expression), we invoke cmd.exe /c
+  // explicitly.  cmd.exe is a real .exe so spawn handles it fine with
+  // shell:false, and it delegates to the .bat while keeping args intact.
+  const [spawnCommand, spawnArgs] = isBatchFile(resolvedCommand)
+    ? ['cmd.exe', ['/c', resolvedCommand, ...args]]
+    : [resolvedCommand, args];
 
   return new Promise<ProcessResult>((resolve) => {
     // Req 3.1, 13.1, 13.2: use spawn with explicit args array, stdio piped.
-    // On Windows, .bat/.cmd files require shell:true to be executable via spawn.
-    const proc = spawn(resolvedCommand, args, {
+    const proc = spawn(spawnCommand, spawnArgs, {
       stdio: ['pipe', 'pipe', 'pipe'],
-      ...(isBatchFile(resolvedCommand) ? { shell: true } : undefined),
     } as import('child_process').SpawnOptionsWithStdioTuple<'pipe','pipe','pipe'>);
 
     const stdoutChunks: Buffer[] = [];
