@@ -130,17 +130,30 @@ describe('R Formatter extension — integration', function () {
       // The default Windows R installer places Rscript.bat at
       // C:\Program Files\R\bin\Rscript.bat.  We simulate this by pointing
       // rscriptPath at a .bat wrapper that exec's the real Rscript.
-      // In CI the RSCRIPT_BAT_PATH env var provides the path; locally the
-      // test resolves it from the default installation location.
-      const batPath =
-        process.env['RSCRIPT_BAT_PATH'] ??
-        'C:\\Program Files\\R\\bin\\Rscript.bat';
+      // In CI the RSCRIPT_BAT_PATH env var is set by the "Create synthetic
+      // Rscript.bat" workflow step — it must always be present on Windows CI.
+      // Locally, the test falls back to the default installer path; if that
+      // also doesn't exist, the test is skipped with a clear message.
+      const batPath = process.env['RSCRIPT_BAT_PATH'];
 
-      // Skip gracefully when the .bat file is not present on this machine.
-      if (!fs.existsSync(batPath)) {
-        console.log(`Skipping Windows .bat test — ${batPath} not found`);
-        return;
+      if (!batPath) {
+        // In CI this env var is always set, so reaching here means we're
+        // running locally without a .bat file available — skip gracefully.
+        const fallback = 'C:\\Program Files\\R\\bin\\Rscript.bat';
+        if (!fs.existsSync(fallback)) {
+          console.log(
+            `Skipping Windows .bat test locally — neither RSCRIPT_BAT_PATH ` +
+            `nor ${fallback} found`,
+          );
+          return;
+        }
       }
+
+      assert.ok(
+        batPath && fs.existsSync(batPath),
+        `RSCRIPT_BAT_PATH is set to "${batPath}" but the file does not exist. ` +
+        `Check the "Create synthetic Rscript.bat" CI step.`,
+      );
 
       const expectedText = fs.readFileSync(FORMATTED_PATH, 'utf8');
 
@@ -148,7 +161,7 @@ describe('R Formatter extension — integration', function () {
       const previousPath = config.get<string>('rscriptPath', 'Rscript');
       await config.update(
         'rscriptPath',
-        batPath,
+        batPath!,
         vscode.ConfigurationTarget.Global,
       );
 

@@ -72,6 +72,19 @@ jobs:
           echo "RSCRIPT_PATH=$RSCRIPT_PATH" >> "$GITHUB_ENV"
           echo "Rscript found at: $RSCRIPT_PATH"
 
+      # Create a synthetic Rscript.bat wrapper so the Windows .bat regression
+      # test always has a real .bat file to exercise, regardless of how setup-r
+      # installs R (which puts the versioned .exe on PATH, not Rscript.bat).
+      - name: Create synthetic Rscript.bat and export path (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $rscript = (Get-Command Rscript).Source
+          $batPath = "$env:RUNNER_TEMP\Rscript.bat"
+          "@echo off`r`n`"$rscript`" %*" | Set-Content -Path $batPath -Encoding ascii
+          echo "RSCRIPT_BAT_PATH=$batPath" >> $env:GITHUB_ENV
+          echo "Created $batPath -> $rscript"
+
       # ── Linux: install Xvfb and run tests through a virtual display ─────────
       - name: Install Xvfb (Linux only)
         if: runner.os == 'Linux'
