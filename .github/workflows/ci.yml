@@ -38,6 +38,7 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        create_bat: [false]
         include:
           # Second Windows run that creates a synthetic Rscript.bat so the
           # .bat regression test always has a real file to exercise.  The
