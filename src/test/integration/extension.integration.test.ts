@@ -118,7 +118,84 @@ describe('R Formatter extension — integration', function () {
     );
   });
 
-  // ── Test 2: Bad rscriptPath — error notification / document unchanged ─────
+  // ── Test 2 (Windows only): .bat wrapper on PATH ───────────────────────────
+  // Regression test for the EINVAL error reported by Windows users whose PATH
+  // contains the default Rscript.bat wrapper instead of Rscript.exe directly.
+  // spawn() with shell:false cannot execute .bat files; shell:true is required.
+  // This test is skipped on non-Windows platforms.
+
+  (process.platform === 'win32' ? it : it.skip)(
+    'formats document when rscriptPath is a .bat file (Windows EINVAL regression)',
+    async () => {
+      // The default Windows R installer places Rscript.bat at
+      // C:\Program Files\R\bin\Rscript.bat.  We simulate this by pointing
+      // rscriptPath at a .bat wrapper that exec's the real Rscript.
+      // In CI the RSCRIPT_BAT_PATH env var provides the path; locally the
+      // test resolves it from the default installation location.
+      const batPath =
+        process.env['RSCRIPT_BAT_PATH'] ??
+        'C:\\Program Files\\R\\bin\\Rscript.bat';
+
+      // Skip gracefully when the .bat file is not present on this machine.
+      if (!fs.existsSync(batPath)) {
+        console.log(`Skipping Windows .bat test — ${batPath} not found`);
+        return;
+      }
+
+      const expectedText = fs.readFileSync(FORMATTED_PATH, 'utf8');
+
+      const config = vscode.workspace.getConfiguration('styler');
+      const previousPath = config.get<string>('rscriptPath', 'Rscript');
+      await config.update(
+        'rscriptPath',
+        batPath,
+        vscode.ConfigurationTarget.Global,
+      );
+
+      try {
+        const { doc } = await openFile(UNFORMATTED_PATH);
+        await waitForExtensionActivation();
+        await sleep(500);
+
+        const changePromise = new Promise<void>((resolve) => {
+          const disposable = vscode.workspace.onDidChangeTextDocument((e) => {
+            if (e.document === doc && e.contentChanges.length > 0) {
+              disposable.dispose();
+              resolve();
+            }
+          });
+        });
+
+        await vscode.commands.executeCommand('editor.action.formatDocument');
+
+        await Promise.race([
+          changePromise,
+          sleep(60000).then(() => {
+            throw new Error(
+              'Timed out (60s) waiting for formatter when using Rscript.bat. ' +
+                'Ensure R and the styler package are installed.',
+            );
+          }),
+        ]);
+
+        const actualText = doc.getText();
+        assert.strictEqual(
+          actualText,
+          expectedText,
+          `Formatting via Rscript.bat should produce the same output as Rscript.exe.\n` +
+            `Expected:\n${expectedText}\nActual:\n${actualText}`,
+        );
+      } finally {
+        await config.update(
+          'rscriptPath',
+          previousPath,
+          vscode.ConfigurationTarget.Global,
+        );
+      }
+    },
+  );
+
+  // ── Test 3: Bad rscriptPath — error notification / document unchanged ─────
 
   it('leaves document unchanged when rscriptPath does not exist (Req 1.2, 1.3, 8.1, 8.2)', async () => {
     const originalText = fs.readFileSync(UNFORMATTED_PATH, 'utf8');
