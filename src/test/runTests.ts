@@ -8,8 +8,9 @@
  * Requirements: 1.1, 1.2, 1.3
  */
 
+import * as fs from 'fs';
 import * as path from 'path';
-import { runTests } from '@vscode/test-electron';
+import { runTests, downloadAndUnzipVSCode } from '@vscode/test-electron';
 
 async function main(): Promise<void> {
   // Root of the extension under test.
@@ -23,7 +24,22 @@ async function main(): Promise<void> {
   const fixturesPath = path.resolve(__dirname, '../../src/test/fixtures');
 
   try {
+    // Download VS Code explicitly so we can fix up the executable path before
+    // launching.  VS Code 1.139+ removed the `Electron -> Code` symlink that
+    // @vscode/test-electron 2.5.2 still hardcodes.  When the returned path
+    // points at a non-existent `Electron` binary, we swap it for `Code` which
+    // is the actual executable in the same directory.
+    let vscodeExecutablePath = await downloadAndUnzipVSCode('stable');
+    if (!fs.existsSync(vscodeExecutablePath)) {
+      const dir = path.dirname(vscodeExecutablePath);
+      const candidate = path.join(dir, 'Code');
+      if (fs.existsSync(candidate)) {
+        vscodeExecutablePath = candidate;
+      }
+    }
+
     await runTests({
+      vscodeExecutablePath,
       extensionDevelopmentPath,
       extensionTestsPath,
       launchArgs: [
