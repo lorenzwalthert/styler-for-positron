@@ -72,6 +72,20 @@ jobs:
           echo "RSCRIPT_PATH=$RSCRIPT_PATH" >> "$GITHUB_ENV"
           echo "Rscript found at: $RSCRIPT_PATH"
 
+      # macOS: strip Gatekeeper quarantine from the downloaded VS Code bundle
+      # and ensure the Electron binary is executable.  Without this, macOS may
+      # refuse to launch Electron with ENOENT / permission errors in CI.
+      - name: Fix VS Code permissions (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          VSCODE_DIR=".vscode-test"
+          if [ -d "$VSCODE_DIR" ]; then
+            find "$VSCODE_DIR" -name "Electron" -exec chmod +x {} \;
+            xattr -rd com.apple.quarantine "$VSCODE_DIR" 2>/dev/null || true
+            echo "Fixed permissions in $VSCODE_DIR"
+          fi
+
       # ── Linux: install Xvfb and run tests through a virtual display ─────────
       - name: Install Xvfb (Linux only)
         if: runner.os == 'Linux'
