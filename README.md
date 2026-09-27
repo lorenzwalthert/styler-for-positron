@@ -40,6 +40,11 @@ Positron activates `posit.air-vscode` by default, which also registers an R form
 
 **"Rscript not found"** — R is not installed or not on your PATH. Install R from [r-project.org](https://www.r-project.org/) or set `styler.rscriptPath` to the full path of your `Rscript` binary.
 
+**Windows: "spawn EINVAL" or "Rscript not found" even though `Rscript` works in the terminal** — The default R Windows installer adds `Rscript.bat` (a thin batch-file wrapper) to `C:\Program Files\R\bin\` and puts that directory on the PATH. The extension handles `.bat` files automatically, so this should work out of the box. If you still see the error, set `styler.rscriptPath` explicitly to the versioned `.exe`, for example:
+```json
+{ "styler.rscriptPath": "C:\\Program Files\\R\\R-4.4.3\\bin\\Rscript.exe" }
+```
+
 **"Package 'styler' is not installed"** — Run `install.packages("styler")` in R, then try formatting again.
 
 **"Formatting timed out"** — The formatter took longer than `styler.timeoutMs`. Increase the timeout in settings.

@@ -29,7 +29,7 @@ jobs:
 
   # ── Integration tests (real VS Code host + R + styler) ─────────────────────
   integration-tests:
-    name: Integration tests (${{ matrix.os }})
+    name: Integration tests (${{ matrix.os }}${{ matrix.create_bat && ' — bat' || '' }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -38,6 +38,13 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        create_bat: [false]
+        include:
+          # Second Windows run that creates a synthetic Rscript.bat so the
+          # .bat regression test always has a real file to exercise.  The
+          # original windows-latest entry above is left untouched.
+          - os: windows-latest
+            create_bat: true
 
     steps:
       - uses: actions/checkout@v4
@@ -71,6 +78,19 @@ jobs:
           RSCRIPT_PATH="$(which Rscript)"
           echo "RSCRIPT_PATH=$RSCRIPT_PATH" >> "$GITHUB_ENV"
           echo "Rscript found at: $RSCRIPT_PATH"
+
+      # Create a synthetic Rscript.bat wrapper so the Windows .bat regression
+      # test always has a real .bat file to exercise, regardless of how setup-r
+      # installs R (which puts the versioned .exe on PATH, not Rscript.bat).
+      - name: Create synthetic Rscript.bat and export path (Windows)
+        if: matrix.create_bat
+        shell: pwsh
+        run: |
+          $rscript = (Get-Command Rscript).Source
+          $batPath = "$env:RUNNER_TEMP\Rscript.bat"
+          "@echo off`r`n`"$rscript`" %*" | Set-Content -Path $batPath -Encoding ascii
+          echo "RSCRIPT_BAT_PATH=$batPath" >> $env:GITHUB_ENV
+          echo "Created $batPath -> $rscript"
 
       # ── Linux: install Xvfb and run tests through a virtual display ─────────
       - name: Install Xvfb (Linux only)
