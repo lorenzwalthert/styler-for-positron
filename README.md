@@ -15,7 +15,10 @@ A Code OSS extension that formats R code using the [{styler}](https://styler.r-l
 
 ## Installation
 
-Search for **"{styler}: Non-Invasive Pretty Printing of R Code"** in the Extensions panel is the easiest way to install it. Alternatively, download it from [Open VSX](https://open-vsx.org/).
+Search for **"{styler}: Non-Invasive Pretty Printing of R Code"** in the Extensions panel — this works for both VS Code and Positron. You can also install it directly from the marketplace pages:
+
+- **VS Code Marketplace**: [marketplace.visualstudio.com](https://marketplace.visualstudio.com/items?itemName=lorenzwalthert.styler)
+- **Open VSX** (Positron, VSCodium, and other Code OSS derivatives): [open-vsx.org](https://open-vsx.org/extension/lorenzwalthert/styler)
 
 Once installed, the extension activates automatically when you open an R file. Trigger formatting with:
 - **Format Document**: `Shift+Alt+F` (Windows/Linux) or `Shift+Option+F` (macOS)
